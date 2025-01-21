@@ -4,6 +4,5 @@ public class Main {
         System.out.println("Hello World!");
         System.out.println("HEllo world");
         System.out.println("Erabot");
-        System.out.println("arrl");
     }
 }
