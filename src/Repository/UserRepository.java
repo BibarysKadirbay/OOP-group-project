@@ -33,7 +33,7 @@ public class UserRepository  {
             st.setString(2, user.getSurname());
             st.setBoolean(3, user.getGender());
             st.setFloat(4, user.getGpa());
-            st.setString(2, user.getTelegramtag());
+            st.setString(5, user.getTelegramtag());
             st.execute();
             return true;
         }
