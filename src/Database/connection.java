@@ -18,6 +18,7 @@ public class connection {
             System.err.println("Error while connecting to database: " + e.getMessage());
         }
         return connection;
+
     }
 
     public static void main(String[] args) {
