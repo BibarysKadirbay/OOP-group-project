@@ -6,122 +6,78 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserRepository  {
+public class UserRepository {
 
 
+    public User findUserByBarcode(Connection connection, int barcode) {
+        String sql = "SELECT * FROM Groups WHERE Barcode = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, barcode);
+            ResultSet rs = ps.executeQuery();
 
-
-
-    public UserRepository() {
-
-
-    }
-
-
-
-
-
-
-    public  boolean createUser(User user) {
-        Connection connection = null;
-        try {
-            connection = database.getConnection();
-            String sql = "INSERT INTO users (name, surname, gender, gpa, telegramtag) VALUES (?, ?, ?, ?, ?, ?)";
-            PreparedStatement st = connection.prepareStatement(sql);
-
-            st.setString(1, user.getName());
-            st.setString(2, user.getSurname());
-            st.setBoolean(3, user.getGender());
-            st.setFloat(4, user.getGpa());
-            st.setString(2, user.getTelegramtag());
-            st.execute();
-            return true;
-        }
-
-        catch (SQLException e) {
-            System.out.println("SQL error: " + e.getMessage());
-        }
-        return false;
-    }
-
-
-
-
-
-
-    @Override
-    public User getUserByBarcode (int barcode){
-        Connection connection = null;
-
-        try{
-            connection = database.connection;
-            String sql = "SELECT * FROM users WHERE barcode = ?";
-
-            PreparedStatement st = connection.prepareStatement(sql);
-            st.setInt(1, barcode);
-            ResultSet rs = st.executeQuery();
-
-            if(rs.next()){
+            if (rs.next()) {
                 return new User(
-                        rs.getInt("barcode"),
-                        rs.getString("name"),
-                        rs.getString("surname"),
-                        rs.getBoolean("gender"),
-                        rs.getFloat("gpa"),
-                        rs.getString("telegramtag"));
-
+                        rs.getInt("Barcode"),
+                        rs.getString("Name"),
+                        rs.getString("Surname"),
+                        rs.getString("TG nickname"),
+                        rs.getString("Group"),
+                        rs.getString("City"),
+                        rs.getBoolean("Gender"),
+                        rs.getInt("Age")
+                );
             }
-
-        }
-        catch (SQLException e) {
-            System.out.println("SQL error: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
         }
         return null;
+    }
 
+
+
+
+    public List<User> findAllStudents(Connection connection) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM Groups";
+
+        try (Statement st = connection.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                users.add(new User(
+                        rs.getInt("Barcode"),
+                        rs.getString("Name"),
+                        rs.getString("Surname"),
+                        rs.getString("TG nickname"),
+                        rs.getString("Group"),
+                        rs.getString("City"),
+                        rs.getBoolean("Gender"),
+                        rs.getInt("Age")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
+        }
+        return users;
     }
 
 
 
 
-
-
-
-    @Override
-    public List<User> getAllUsers() {
-        Connection connection = null;
-        try{
-            connection = database.getConnection();
-            String sql ="SELECT  name, surname, gender, gpa, telegramtag FROM users";
-            Statement st = connection.createStatement();
-
-            ResultSet rs = st.executeQuery(sql);
-            List<User> users = new ArrayList<>();
-            while(rs.next()){
-                User user = new User(
-                        rs.getInt("barcode"),
-                        rs.getString("name"),
-                        rs.getString("surname"),
-                        rs.getBoolean("gender"),
-                        rs.getFloat("gpa"),
-                        rs.getString("telegramtag"));
-                users.add(user);
-            }
-            return users;
-        }catch (SQLException e){
-            System.out.println("sql error:" + e.getMessage());
+    public void updateStudentByBarcode(Connection connection, User user) {
+        String sql = "UPDATE Groups SET Name = ?, Surname = ?, TG nickname = ?, Group = ?, City = ?, Gender = ?, Age = ? WHERE Barcode = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getSurname());
+            ps.setString(3, user.getTgNickname());
+            ps.setString(4, user.getGroup());
+            ps.setString(5, user.getCity());
+            ps.setBoolean(6, user.isGender());
+            ps.setInt(7, user.getAge());
+            ps.setInt(8, user.getBarcode());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
         }
-        return null;
     }
-}
-
-
-
-
-
-
-
-
-
-
-
 }
