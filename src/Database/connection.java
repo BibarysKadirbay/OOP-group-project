@@ -1,27 +1,91 @@
-package Database;
+package data.interfaces;
+
+import java.sql.Connection;
+
+public interface IDB {
+    Connection getConnection();
+    void close();
+}
+package data;
+
+import data.interfaces.IDB;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class connection {
-    private static final String URL = "jdbc:postgresql://localhost:5432/Groups";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "5040";
+public class DB implements IDB {
+    private String host;
+    private String username;
+    private String password;
+    private String dbName;
 
-    public static Connection connect() {
-        Connection connection = null;
-        try {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Connection to PostgreSQL established successfully!");
-        } catch (SQLException e) {
-            System.err.println("Error while connecting to database: " + e.getMessage());
-        }
-        return connection;
+    private Connection connection;
 
+    public DB(String host, String username, String password, String dbName) {
+        setHost(host);
+        setUsername(username);
+        setPassword(password);
+        setDbName(dbName);
+        getConnection();
     }
 
-    public static void main(String[] args) {
-        connect();
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getDbName() {
+        return dbName;
+    }
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
+
+    @Override
+    public Connection getConnection() {
+        String connectionUrl = host + "/" + dbName;
+        try {
+            if(connection != null && !connection.isClosed()) {
+                return connection;
+            }
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(connectionUrl, username, password);
+            return connection;
+        }catch (Exception e) {
+            System.out.println("Failed to connect to database: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public void close() {
+        if(connection != null) {
+            try{
+                connection.close();
+            }catch (SQLException e) {
+                System.out.println("Failed to close connection" + e.getMessage());
+            }
+        }
     }
 }
