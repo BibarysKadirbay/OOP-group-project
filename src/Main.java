@@ -1,10 +1,17 @@
+import controllers.UserController;
+import controllers.interfaces.IUserController;
+import data.DB;
+import data.interfaces.IDB;
+import repository.UserRepository;
+import repository.interfaces.IUserRepository;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
-        System.out.println("HEllo world");
-        System.out.println("Erabot");
-        System.out.println("arrl");
+        IDB idb = new DB("jdbc:postgresql://localhost:5431", "postgres", "0000", "postgres");
+        IUserRepository userRepository = new UserRepository(idb);
+        IUserController userController = new UserController(userRepository);
+        Front project = new Front(userController);
+        project.run();
+        idb.close();
     }
-
 }

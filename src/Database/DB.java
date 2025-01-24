@@ -1,11 +1,3 @@
-package data.interfaces;
-
-import java.sql.Connection;
-
-public interface IDB {
-    Connection getConnection();
-    void close();
-}
 package data;
 
 import data.interfaces.IDB;
@@ -16,9 +8,9 @@ import java.sql.SQLException;
 
 public class DB implements IDB {
     private String host;
-    private String username;
-    private String password;
-    private String dbName;
+    private String username; //postgres username
+    private String password; //postgres password
+    private String dbName; //postgres database
 
     private Connection connection;
 
