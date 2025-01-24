@@ -9,7 +9,7 @@ import java.util.List;
 public class UserRepository {
 
 
-    public User findUserByBarcode(Connection connection, int barcode) {
+    public User findStudentByBarcode(Connection connection, int barcode) {
         String sql = "SELECT * FROM Groups WHERE Barcode = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, barcode);
