@@ -7,4 +7,6 @@ public interface IUserController {
     String showAllUsers();
     String getInformation(int barcode);
     String deleteUser(int barcode);
+    double getGPA(int barcode);
+    String setGPA(int barcode, double gpa);
 }
