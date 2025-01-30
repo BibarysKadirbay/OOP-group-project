@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class UserRepository implements IUserRepository {
     private final IDB db;
 
@@ -20,7 +21,7 @@ public class UserRepository implements IUserRepository {
         Connection connection = null;
         try {
             connection = db.getConnection();
-            String sql ="INSERT INTO groups(barcode, name, surname, tg_nickname, group_name, city, gender , age) VALUES (?, ?, ?, ?, ?, ?, ? , ?)";
+            String sql ="INSERT INTO groups(barcode, name, surname, tg_nickname, group_name, city, gender , age , gpa) VALUES (?, ?, ?, ?, ?, ?, ? , ? , ?)";
             PreparedStatement st = connection.prepareStatement(sql);
 
             st.setInt(1, user.getBarcode());
@@ -31,6 +32,7 @@ public class UserRepository implements IUserRepository {
             st.setString(6, user.getCity());
             st.setBoolean(7, user.isGender());
             st.setInt(8, user.getAge());
+            st.setDouble(9 , user.getGPA());
             st.execute();
             return true;
         } catch (SQLException e){
@@ -59,7 +61,8 @@ public class UserRepository implements IUserRepository {
                         rs.getString("group_name"),
                         rs.getString("city"),
                         rs.getBoolean("gender"),
-                        rs.getInt("age"));
+                        rs.getInt("age"),
+                        rs.getDouble("gpa"));
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -87,7 +90,8 @@ public class UserRepository implements IUserRepository {
                         rs.getString("group_name"),
                         rs.getString("city"),
                         rs.getBoolean("gender"),
-                        rs.getInt("age"));
+                        rs.getInt("age"),
+                        rs.getDouble("gpa"));
 
                 allUsers.add(user);
             }
@@ -105,17 +109,3 @@ public class UserRepository implements IUserRepository {
         try{
             connection = db.getConnection();
             String sql ="DELETE FROM groups WHERE barcode = ?";
-
-            PreparedStatement st = connection.prepareStatement(sql);
-            st.setInt(1, barcode);
-            int rs = st.executeUpdate();
-            if (rs>0){
-                return true;
-            }
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-}
