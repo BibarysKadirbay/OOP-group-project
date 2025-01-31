@@ -17,6 +17,7 @@ public class UserRepository {
 
             if (rs.next()) {
                 return new User(
+
                         rs.getInt("Barcode"),
                         rs.getString("Name"),
                         rs.getString("Surname"),
