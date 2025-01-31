@@ -1,5 +1,4 @@
 package models;
-
 public class User {
     private int id ;
     private int barcode;
@@ -10,7 +9,7 @@ public class User {
     private String city;
     private boolean gender;
     private int age;
-    private double gpa
+    private double gpa;
     public User(){}
     public User(int id , int barcode, String name, String surname, String tg_name, String group, String city, boolean gender , int age, double gpa) {
         this.id = id;
@@ -39,39 +38,30 @@ public class User {
     public int getBarcode() {
         return barcode;
     }
-
     public String getName() {
         return name;
     }
-
     public String getSurname() {
         return surname;
     }
-
     public String getTg_name() {
         return tg_name;
     }
-
     public String getGroup() {
         return group;
     }
-
     public String getCity() {
         return city;
     }
-
     public boolean isGender() {
         return gender;
     }
-
     public int getAge() {
         return age;
     }
-
     public double getGPA() {
         return gpa;
     }
-
     @Override
     public String toString() {
         return "User {" +
