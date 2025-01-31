@@ -1,7 +1,8 @@
+import Database.DB;
+import Database.interfaces.IDB;
 import controllers.UserController;
 import controllers.interfaces.IUserController;
-import data.DB;
-import data.interfaces.IDB;
+
 import repository.UserRepository;
 import repository.interfaces.IUserRepository;
 

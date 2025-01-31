@@ -1,6 +1,6 @@
 package repository;
 
-import data.interfaces.IDB;
+import Database.interfaces.IDB;
 import models.User;
 import repository.interfaces.IUserRepository;
 
@@ -108,4 +108,53 @@ public class UserRepository implements IUserRepository {
         Connection connection = null;
         try{
             connection = db.getConnection();
-            String sql ="DELETE FROM groups WHERE barcode = ?";
+            String sql ="DELETE FROM groups WHERE barcode = ?";PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, barcode);
+            int rs = st.executeUpdate();
+            if (rs>0){
+                return true;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+    @Override
+    public double getGPA(int barcode) {
+        Connection connection = null;
+        try{
+            connection = db.getConnection();
+            String sql ="SELECT gpa FROM groups WHERE barcode = ?";
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1,barcode);
+            ResultSet rs = st.executeQuery();
+            if(rs.next()){
+                return rs.getDouble("gpa");
+            }
+        }catch (SQLException e){
+            System.out.println("Error getting GPA: " + e.getMessage());
+        }
+        return -1;
+    }
+
+    @Override
+    public boolean setGPA(int barcode, double gpa) {
+        Connection connection = null;
+        try{
+            connection = db.getConnection();
+            String sql ="UPDATE groups SET gpa = ? WHERE barcode = ?";
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setDouble(1, gpa);
+            st.setInt(2, barcode);
+            int rs = st.executeUpdate();
+            if (rs>0){
+                return true;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+}
+
+
