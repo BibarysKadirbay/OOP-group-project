@@ -14,5 +14,6 @@ public class Main {
         Front project = new Front(userController);
         project.run();
         idb.close();
+        jojiojioioo
     }
 }
