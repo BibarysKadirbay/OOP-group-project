@@ -10,7 +10,7 @@ public class User {
     private String city;
     private boolean gender;
     private int age;
-    private double gpa;
+    private double gpa
     public User(){}
     public User(int id , int barcode, String name, String surname, String tg_name, String group, String city, boolean gender , int age, double gpa) {
         this.id = id;
