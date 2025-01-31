@@ -15,7 +15,7 @@ public class UserController implements IUserController {
         this.userRepository = userRepository;
     }
     @Override
-    public String addUser(User user) {
+    public String addUser(User user)  {
         boolean created = userRepository.addUser(user);
         return (created) ? "User was created\n" : "User creation was failed\n";
     }
