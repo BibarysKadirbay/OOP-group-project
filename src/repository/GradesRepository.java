@@ -1,6 +1,6 @@
 package repository;
 
-import database.interfaces.IDB;
+import Database.interfaces.IDB;
 import models.grades;
 import repository.interfaces.iGradesRepository;
 
