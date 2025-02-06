@@ -2,7 +2,6 @@
 import controllers.ScheduleController;
 import models.ScheduleModule;
 import repository.ScheduleRepository;*/
-//I write code
 import controllers.UserController;
 import controllers.interfaces.IUserController;
 import data.DB;
@@ -20,7 +19,7 @@ public class Main {
         idb.close();
     }
 }
-
+//Schedule Main
 /*public class Main {
     public static void main(String[] args) {
         // Initialize Repository, Module, and Controller
@@ -45,6 +44,24 @@ public class Main {
 
         // Delete a schedule
         scheduleController.deleteSchedule(1);
+    }
+}*/
+//Attendance Main
+/*import java.time.LocalDate;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        IAttendanceController controller = new AttendanceController();
+
+        // Mark attendance for student with ID 1 for course 101 on 2025-02-04
+        controller.markAttendance(1, 101, LocalDate.of(2025, 2, 4), true); // true = present
+
+        // View attendance for student with ID 1
+        List<Attendance> studentAttendance = controller.viewAttendanceByStudent(1);
+
+        // View attendance for course with ID 101
+        List<Attendance> courseAttendance = controller.viewAttendanceByCourse(101);
     }
 }*/
 
