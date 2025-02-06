@@ -56,15 +56,15 @@ public class DB implements IDB {
 
     @Override
     public Connection getConnection() {
-        String connectionUrl = host + "/" + dbName;
+        String connectionUrl = "jdbc:postgresql://" + host + "/" + dbName;
         try {
-            if(connection != null && !connection.isClosed()) {
+            if (connection != null && !connection.isClosed()) {
                 return connection;
             }
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(connectionUrl, username, password);
             return connection;
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Failed to connect to database: " + e.getMessage());
         }
         return null;
@@ -72,11 +72,11 @@ public class DB implements IDB {
 
     @Override
     public void close() {
-        if(connection != null) {
-            try{
+        if (connection != null) {
+            try {
                 connection.close();
-            }catch (SQLException e) {
-                System.out.println("Failed to close connection" + e.getMessage());
+            } catch (SQLException e) {
+                System.out.println("Failed to close connection: " + e.getMessage());
             }
         }
     }
