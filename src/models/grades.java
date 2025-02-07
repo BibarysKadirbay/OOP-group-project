@@ -15,7 +15,11 @@ public class grades {
         this.courseId = courseId;
         this.percentage = percentage;
     }
-
+    public grades(int studentId, int courseId, int percentage) {
+        this.studentId = studentId;
+        this.courseId = courseId;
+        this.percentage = percentage;
+    }
     public int getGradeId() {
         return gradeId;
     }

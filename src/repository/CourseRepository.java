@@ -3,93 +3,140 @@ package repository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import Database.interfaces.IDB;
 import models.Course;
-import Database.DB;
-
-public class CourseRepository {
-    private final DB db;
-
-    public CourseRepository(DB db) {
+import repository.interfaces.ICourseRepository;
+public class CourseRepository implements ICourseRepository {
+    private final IDB db;
+    public CourseRepository(IDB db) {
         this.db = db;
     }
 
-    public void addCourse(Course course) {
-        String query = "INSERT INTO courses (id, name, description, instructor) VALUES (?, ?, ?, ?)";
-        try (Connection conn = db.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, course.getId());
-            stmt.setString(2, course.getName());
-            stmt.setString(3, course.getDescription());
-            stmt.setString(4, course.getInstructor());
-            stmt.executeUpdate();
+    public boolean addCourse(Course course) {
+        Connection connection = null;
+        try{
+            connection = db.getConnection();
+            String query = "INSERT INTO courses (name, instructor) VALUES (?, ?)";
+            PreparedStatement stmt = connection.prepareStatement(query);{
+                stmt.setString(1, course.getName());
+                stmt.setString(2, course.getInstructor());
+                stmt.executeUpdate();
+                return stmt.executeUpdate() > 0;
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
-
     public List<Course> getAllCourses() {
         List<Course> courses = new ArrayList<>();
         String query = "SELECT * FROM courses";
-        try (Connection conn = db.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+        Connection connection = null;
+        try {
+            connection = db.getConnection();
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
             while (rs.next()) {
                 courses.add(new Course(
                         rs.getInt("id"),
                         rs.getString("name"),
-                        rs.getString("description"),
                         rs.getString("instructor")
                 ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return courses;
     }
 
     public Course getCourseById(int id) {
         String query = "SELECT * FROM courses WHERE id = ?";
-        try (Connection conn = db.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        Connection connection = null;
+        try {
+            connection = db.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(query);
             stmt.setInt(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return new Course(
-                            rs.getInt("id"),
-                            rs.getString("name"),
-                            rs.getString("description"),
-                            rs.getString("instructor")
-                    );
-                }
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Course(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("instructor")
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }
+    public boolean updateCourse(Course course) {
+        String query = "UPDATE courses SET name = ?, instructor = ? WHERE id = ?";
+        Connection connection = null;
 
-    public void updateCourse(Course course) {
-        String query = "UPDATE courses SET name = ?, description = ?, instructor = ? WHERE id = ?";
-        try (Connection conn = db.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try {
+            connection = db.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(query);
             stmt.setString(1, course.getName());
-            stmt.setString(2, course.getDescription());
-            stmt.setString(3, course.getInstructor());
-            stmt.setInt(4, course.getId());
-            stmt.executeUpdate();
+            stmt.setString(2, course.getInstructor());
+            stmt.setInt(3, course.getId());
+
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+        return false;
     }
 
-    public void deleteCourse(int id) {
+    public boolean deleteCourse(int id) {
         String query = "DELETE FROM courses WHERE id = ?";
-        try (Connection conn = db.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        Connection connection = null;
+
+        try {
+            connection = db.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(query);
             stmt.setInt(1, id);
-            stmt.executeUpdate();
+
+            int rowsDeleted = stmt.executeUpdate();
+            return rowsDeleted > 0;
+
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+        return false;
     }
 }

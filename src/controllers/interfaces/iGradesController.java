@@ -1,8 +1,12 @@
 package controllers.interfaces;
 
+
+import models.Role;
+
 public interface iGradesController {
-    String createGrade(int studentId, int courseId, int percentage);
-    String getGradesByStudentId(int studentId);
-    String calculateGPA(int studentId);
-    String getAllGrades();
+    String createGrade(int studentBarcode, int courseId, int percentage);
+    String getGradesByStudentBarcode(int studentBarcode);
+    String calculateGPA(int studentBarcode);
+    String getAllGrades(Role userRole);
+    String getStudentGradesWithCourses(int studentBarcode);
 }

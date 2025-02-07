@@ -8,8 +8,6 @@ public class Attendance {
     private int courseId;
     private LocalDate date;
     private boolean status;
-
-    // Constructor
     public Attendance(int attendanceId, int studentId, int courseId, LocalDate date, boolean status) {
         this.attendanceId = attendanceId;
         this.studentId = studentId;
@@ -17,8 +15,12 @@ public class Attendance {
         this.date = date;
         this.status = status;
     }
-
-    // Getters and Setters
+    public Attendance(int studentId, int courseId, LocalDate date, boolean status) {
+        this.studentId = studentId;
+        this.courseId = courseId;
+        this.date = date;
+        this.status = status;
+    }
     public int getAttendanceId() {
         return attendanceId;
     }

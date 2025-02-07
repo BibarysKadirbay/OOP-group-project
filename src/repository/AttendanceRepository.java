@@ -1,7 +1,8 @@
-package Repository;
+package repository;
 
-import Repository.interfaces.IAttendanceRepository;
+import Database.interfaces.IDB;
 import models.Attendance;
+import repository.interfaces.IAttendanceRepository;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -9,19 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceRepository implements IAttendanceRepository {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/your_database_name";
-    private static final String USER = "your_username";
-    private static final String PASSWORD = "your_password";
+    private final IDB db;
 
-    // Get a connection to the PostgreSQL database
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DB_URL, USER, PASSWORD);
+    public AttendanceRepository(IDB db) {
+        this.db = db;
     }
-
-    // Insert attendance record
     public boolean insertAttendance(Attendance attendance) {
+        Connection connection = null;
         String query = "INSERT INTO attendance (student_id, course_id, date, status) VALUES (?, ?, ?, ?)";
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+        try{
+            connection = db.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(query);
             stmt.setInt(1, attendance.getStudentId());
             stmt.setInt(2, attendance.getCourseId());
             stmt.setDate(3, Date.valueOf(attendance.getDate()));
@@ -38,10 +37,12 @@ public class AttendanceRepository implements IAttendanceRepository {
     // Get attendance by student ID
     public List<Attendance> getAttendanceByStudentId(int studentId) {
         List<Attendance> attendanceList = new ArrayList<>();
+        Connection connection = null;
         String query = "SELECT * FROM attendance WHERE student_id = ?";
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+        try{
+            connection = db.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(query);
             stmt.setInt(1, studentId);
-
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 int attendanceId = rs.getInt("attendance_id");
@@ -59,11 +60,13 @@ public class AttendanceRepository implements IAttendanceRepository {
 
     // Get attendance by course ID
     public List<Attendance> getAttendanceByCourseId(int courseId) {
+        Connection connection = null;
         List<Attendance> attendanceList = new ArrayList<>();
         String query = "SELECT * FROM attendance WHERE course_id = ?";
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+        try{
+            connection = db.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(query);
             stmt.setInt(1, courseId);
-
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 int attendanceId = rs.getInt("attendance_id");
@@ -79,4 +82,3 @@ public class AttendanceRepository implements IAttendanceRepository {
         return attendanceList;
     }
 }
-

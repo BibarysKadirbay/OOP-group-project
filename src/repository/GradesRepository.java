@@ -1,6 +1,8 @@
 package repository;
 
 import Database.interfaces.IDB;
+import dostup.RoleManager;
+import models.Role;
 import models.grades;
 import repository.interfaces.iGradesRepository;
 
@@ -20,37 +22,34 @@ public class GradesRepository implements iGradesRepository {
         Connection connection = null;
         try {
             connection = db.getConnection();
-            String sql = "INSERT INTO grades(grade_id, student_id, course_id, percentage) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO grades(student_barcode, course_id, percentage) VALUES (?, ?, ?, ?)";
             PreparedStatement st = connection.prepareStatement(sql);
-
-            st.setInt(1, grade.getGradeId());
-            st.setInt(2, grade.getStudentId());
-            st.setInt(3, grade.getCourseId());
-            st.setInt(4, grade.getPercentage());
-
-            st.execute();
-            return true;
+            st.setInt(1, grade.getStudentId());
+            st.setInt(2, grade.getCourseId());
+            st.setInt(2, grade.getPercentage());
+            return st.execute();
         } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
         }
         return false;
     }
 
+
     @Override
-    public List<grades> getGradesByStudentId(int studentId) {
+    public List<grades> getGradesByStudentBarcode(int studentBarcode) {
         Connection connection = null;
         try {
             connection = db.getConnection();
-            String sql = "SELECT * FROM grades WHERE student_id = ?";
+            String sql = "SELECT * FROM grades WHERE student_barcode = ?";
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setInt(1, studentId);
+            st.setInt(1, studentBarcode);
 
             ResultSet rs = st.executeQuery();
             List<grades> gradesList = new ArrayList<>();
             while (rs.next()) {
                 gradesList.add(new grades(
                         rs.getInt("grade_id"),
-                        rs.getInt("student_id"),
+                        rs.getInt("student_barcode"),
                         rs.getInt("course_id"),
                         rs.getInt("percentage")
                 ));
@@ -63,11 +62,15 @@ public class GradesRepository implements iGradesRepository {
     }
 
     @Override
-    public List<grades> getAllGrades() {
+    public List<grades> getAllGrades(Role userRole) {
+        if (!RoleManager.hasAccess(userRole, "VIEW_GRADES")) {
+            System.out.println("Access Denied! Only Admins and Managers can view grades.");
+            return null;
+        }
         Connection connection = null;
         try {
             connection = db.getConnection();
-            String sql = "SELECT grade_id, student_id, course_id, percentage FROM grades";
+            String sql = "SELECT grade_id, student_barcode, course_id, percentage FROM grades";
             Statement st = connection.createStatement();
 
             ResultSet rs = st.executeQuery(sql);
@@ -75,7 +78,7 @@ public class GradesRepository implements iGradesRepository {
             while (rs.next()) {
                 gradesList.add(new grades(
                         rs.getInt("grade_id"),
-                        rs.getInt("student_id"),
+                        rs.getInt("student_barcode"),
                         rs.getInt("course_id"),
                         rs.getInt("percentage")
                 ));
@@ -85,5 +88,33 @@ public class GradesRepository implements iGradesRepository {
             System.out.println("SQL error: " + e.getMessage());
         }
         return null;
+    }
+    public List<String> getStudentGradesWithCourses(int studentId) {
+        List<String> gradesList = new ArrayList<>();
+        String sql = """
+            SELECT g.id, g.student_id, g.course_id, g.percentage, c.name AS course_name
+            FROM grades g
+            JOIN courses c ON g.course_id = c.id
+            WHERE g.student_id = ?;
+        """;
+
+        try (Connection conn = db.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, studentId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                grades grade = new grades(
+                        rs.getInt("id"),
+                        rs.getInt("student_id"),
+                        rs.getInt("course_id"),
+                        rs.getInt("percentage")
+                );
+                gradesList.add("Course: " + rs.getString("course_name") + " | Grade: " + grade.getPercentage());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return gradesList;
     }
 }

@@ -1,4 +1,6 @@
+
 package models;
+
 public class User {
     private int id ;
     private int barcode;
@@ -38,30 +40,39 @@ public class User {
     public int getBarcode() {
         return barcode;
     }
+
     public String getName() {
         return name;
     }
+
     public String getSurname() {
         return surname;
     }
+
     public String getTg_name() {
         return tg_name;
     }
+
     public String getGroup() {
         return group;
     }
+
     public String getCity() {
         return city;
     }
+
     public boolean isGender() {
         return gender;
     }
+
     public int getAge() {
         return age;
     }
+
     public double getGPA() {
         return gpa;
     }
+
     @Override
     public String toString() {
         return "User {" +

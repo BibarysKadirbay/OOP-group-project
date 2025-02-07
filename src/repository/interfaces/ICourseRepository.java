@@ -1,13 +1,10 @@
 package repository.interfaces;
-
-import models.Course;
-
 import java.util.List;
-
+import models.Course;
 public interface ICourseRepository {
-    void addCourse(Course course);
+    boolean addCourse(Course course);
     List<Course> getAllCourses();
     Course getCourseById(int id);
-    void updateCourse(Course course);
-    void deleteCourse(int id);
+    boolean updateCourse(Course course);
+    boolean deleteCourse(int id);
 }

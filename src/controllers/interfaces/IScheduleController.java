@@ -1,12 +1,10 @@
 package controllers.interfaces;
 
-import models.ScheduleModule;
-import java.util.List;
+import models.Schedule;
 
 public interface IScheduleController {
-    ScheduleModule getScheduleById(int scheduleId);
-    List<ScheduleModule> getAllSchedules();
-    void createSchedule(ScheduleModule schedule);
-    void updateSchedule(ScheduleModule schedule);
-    void deleteSchedule(int scheduleId);
+    String addSchedule(Schedule schedule);
+    String getSchedulesByInstructor(String instructor);
+    String showAllSchedules();
+    String deleteSchedule(int scheduleId);
 }

@@ -65,7 +65,7 @@ public class DB implements IDB {
             connection = DriverManager.getConnection(connectionUrl, username, password);
             return connection;
         } catch (Exception e) {
-            System.out.println("Failed to connect to database: " + e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }
