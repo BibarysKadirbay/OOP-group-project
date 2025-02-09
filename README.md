@@ -1,48 +1,53 @@
-Welcome to our project!
+Welcome to our Project!
 Student Management System
-📂 src
-├── 📂 controllers
-│   ├── 📂 interfaces
-│   │   ├──IAttendanceController.java
-│   │   ├──ICourseController.java
-│   │   ├──iGradesController.java
-│   │   ├──IScheduleController.java
-│   │   ├──IUserController.java
+A Java-based Student Management System for managing students, courses, attendance, schedules, and grades.
+
+🚀 Features
+	•	Student Management: Add, update, and manage students.
+	•	Course Management: Assign courses to students.
+	•	Attendance Tracking: Mark and view student attendance.
+	•	Grade Management: Assign and retrieve student grades.
+	•	Schedule Management: Manage student schedules.
+	•	Role-Based Access: Assign different roles like Admin, Manager, and User.
+
+ 📂 Project Structure
+ 📂 src
+├── 📂 controllers       
 │   ├── AttendanceController.java
 │   ├── CourseController.java
 │   ├── GradesController.java
-│   ├── UserController.java
 │   ├── ScheduleController.java
+│   ├── UserController.java
 │
-├── 📂 data
-│   ├── 📂 interfaces
-│   │   ├── IDB.java
+├── 📂 data              
 │   ├── DB.java
 │
-├── 📂 dostup
+├── 📂 dostup     
 │   ├── RoleManager.java
 │
-├── 📂 models
+├── 📂 models   
 │   ├── Attendance.java
 │   ├── Course.java
-│   ├── grades.java
+│   ├── Grades.java
 │   ├── Role.java
 │   ├── Schedule.java
 │   ├── User.java
 │
-├── 📂 repository
-│   ├── 📂 interfaces
-│   │   ├──IAttendanceRepository.java
-│   │   ├──ICourseRepository.java
-│   │   ├──iGradesRepository.java
-│   │   ├──IScheduleRepository.java
-│   │   ├──IUserController.java
+├── 📂 repository       
 │   ├── AttendanceRepository.java
 │   ├── CourseRepository.java
 │   ├── GradesRepository.java
-│   ├── UserRepository.java
 │   ├── ScheduleRepository.java
-├── Front.java
-│── Main.java
+│   ├── UserRepository.java
 │
-├── README.md
+├── Front.java            
+├── Main.java               
+├── README.md               
+
+
+📌 Contributors
+	•	[Bibarys]
+	•	[David]
+	•	[Arlan]
+ 	•	[Ersultan]
+	•	[Ayazhan]
