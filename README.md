@@ -10,8 +10,8 @@ A Java-based Student Management System for managing students, courses, attendanc
 	•	Schedule Management: Manage student schedules.
 	•	Role-Based Access: Assign different roles like Admin, Manager, and User.
 
- 📂 Project Structure
- 📂 src
+## 📂 Project Structure
+## 📂 src
 ├── 📂 controllers       
 │   ├── AttendanceController.java
 │   ├── CourseController.java
