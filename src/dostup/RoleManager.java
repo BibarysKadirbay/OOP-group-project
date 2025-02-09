@@ -9,7 +9,7 @@ public class RoleManager {
             Role.ADMIN, Set.of("ADD_GRADE", "VIEW_GRADES", "EDIT_GRADES", "DELETE_GRADES"),
             Role.MANAGER, Set.of("ADD_GRADE", "VIEW_GRADES", "EDIT_GRADES"),
             Role.EDITOR, Set.of("VIEW_GRADES", "EDIT_GRADES"),
-            Role.STUDENT, Set.of("VIEW_GRADES")  // Students can only view their own grades
+            Role.STUDENT, Set.of("VIEW_GRADES")
     );
 
     public static boolean hasAccess(Role role, String action) {
