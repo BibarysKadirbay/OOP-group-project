@@ -10,7 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GradesRepository implements iGradesRepository {
+public class GradesRepository implements iGradesRepository{
     private final IDB db;
 
     public GradesRepository(IDB db) {
@@ -22,12 +22,12 @@ public class GradesRepository implements iGradesRepository {
         Connection connection = null;
         try {
             connection = db.getConnection();
-            String sql = "INSERT INTO grades(student_barcode, course_id, percentage) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO grades(student_barcode, course_id, percentage) VALUES (?, ?, ?)";
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, grade.getStudentId());
             st.setInt(2, grade.getCourseId());
-            st.setInt(2, grade.getPercentage());
-            return st.execute();
+            st.setInt(3, grade.getPercentage());
+            return st.executeUpdate() > 0;
         } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
         }
@@ -91,12 +91,10 @@ public class GradesRepository implements iGradesRepository {
     }
     public List<String> getStudentGradesWithCourses(int studentId) {
         List<String> gradesList = new ArrayList<>();
-        String sql = """
-            SELECT g.id, g.student_id, g.course_id, g.percentage, c.name AS course_name
-            FROM grades g
-            JOIN courses c ON g.course_id = c.id
-            WHERE g.student_id = ?;
-        """;
+        String sql = "SELECT g.grade_id, g.percentage, c.name, g.course_id " +
+                "FROM grades g " +
+                "JOIN courses c ON g.course_id = c.id " +
+                "WHERE g.student_barcode = ?";
 
         try (Connection conn = db.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -105,16 +103,22 @@ public class GradesRepository implements iGradesRepository {
 
             while (rs.next()) {
                 grades grade = new grades(
-                        rs.getInt("id"),
-                        rs.getInt("student_id"),
+                        rs.getInt("grade_id"),
+                        studentId,
                         rs.getInt("course_id"),
                         rs.getInt("percentage")
                 );
-                gradesList.add("Course: " + rs.getString("course_name") + " | Grade: " + grade.getPercentage());
+
+                gradesList.add("Course: " + rs.getString("name") + " | Grade: " + grade.getPercentage());
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        if (gradesList.isEmpty()) {
+            gradesList.add("No grades found for this student.");
+        }
+
         return gradesList;
     }
 }

@@ -2,14 +2,19 @@ import controllers.GradesController;
 import controllers.interfaces.*;
 import dostup.RoleManager;
 import models.*;
-import repository.GradesRepository;
+import repository.*;
 import repository.interfaces.iGradesRepository;
 import repository.interfaces.IUserRepository;
 import repository.AttendanceRepository;
 import controllers.interfaces.IAttendanceController;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Front {
@@ -85,7 +90,7 @@ public class Front {
                     case 3 -> getInformationByBarcode();
                     case 4 -> deleteStudent();
                     case 5 -> getGPAOfStudent();
-                    case 6 -> enterGPAOfStudent();
+                    case 6 -> setGPAOfStudent();
                     case 7 -> { return; }
                     default -> System.out.println("Invalid choice, try again.");
                 }
@@ -105,23 +110,23 @@ public class Front {
                 if (barcode < 100000 || barcode > 999999) {
                     System.out.println("Invalid barcode. Try again!");
                     System.out.print("Enter student barcode: ");
-                } else if (userController.getInformation(barcode).equals("User  was not found\n")) {
+                } else if (userController.getInformation(barcode).equals("User was not found\n")) {
                     break;
-                } else {
+                }
+                else{
                     System.out.println("Student already exists");
                     System.out.println();
                     return;
                 }
-            } catch (InputMismatchException e) {
+            }catch(InputMismatchException e){
                 System.out.println("Invalid input. Please enter a valid barcode.");
                 scanner.nextLine();
-            } catch (Exception e) {
+            } catch(Exception e){
                 System.out.println("An unexpected error occurred: " + e.getMessage());
                 e.printStackTrace();
                 return;
             }
         }
-
         System.out.print("Enter student name: ");
         String name = scanner.next();
         System.out.print("Enter student surname: ");
@@ -132,23 +137,38 @@ public class Front {
         String group = scanner.next();
         System.out.print("Enter student city: ");
         String city = scanner.next();
-        System.out.print("Enter student (male/female): ");
-        String gender = scanner.next();
+        System.out.print("Enter student gender (male/female): ");
+        String gender;
+        while (true) {
+            gender = scanner.nextLine().trim().toLowerCase();
+            if (gender.equals("male") || gender.equals("female")) {
+                break;
+            }
+            System.out.println("Invalid gender. Please enter 'male' or 'female'.");
+        }
         System.out.print("Enter student age: ");
         int age;
         while (true) {
             try {
                 age = scanner.nextInt();
+                if (age <= 0) {
+                    throw new InputMismatchException();
+                }
                 break;
             } catch (InputMismatchException e) {
                 System.out.println("Invalid input. Please enter a valid age.");
                 scanner.nextLine();
             }
         }
-        double gpa ;
+        System.out.println("Enter student gpa: ");
+        double gpa;
         while (true) {
             try {
                 gpa = scanner.nextDouble();
+                if (gpa < 0.0 || gpa > 4.0) {
+                    System.out.println("Invalid GPA. It must be between 0.0 and 4.0.");
+                    continue;
+                }
                 break;
             } catch (InputMismatchException e) {
                 System.out.println("Invalid input. Please enter a valid age.");
@@ -156,10 +176,9 @@ public class Front {
             }
         }
         boolean genderBool = gender.equalsIgnoreCase("male");
-        User user = new User(barcode, name, surname, tgNickname, group, city, genderBool, age , gpa);
-        System.out.print(userController.addUser (user));
+        User user = new User(barcode, name, surname, tgNickname, group, city, genderBool, age, gpa);
+        System.out.print(userController.addUser(user));
     }
-
     private void getInformationByBarcode() {
         System.out.print("Enter student barcode: ");
         int barcode;
@@ -212,29 +231,38 @@ public class Front {
             e.printStackTrace();
         }
     }
-    private void enterGPAOfStudent() {
-        System.out.print("Enter student barcode: ");
+    private void setGPAOfStudent() {
         int barcode;
         while (true) {
+            System.out.print("Enter student barcode: ");
             try {
-                while (!scanner.hasNextInt()) {
-                    System.out.println("Invalid input. Please enter a number.");
-                    scanner.nextLine(); // Consume the non-integer input
-                }
                 barcode = scanner.nextInt();
-                System.out.print("Enter GPA: ");
-                double gpa = scanner.nextDouble();
-                System.out.println(userController.setGPA(barcode,gpa));
+                if (userController.getInformation(barcode).equals("User was not found\n")) {
+                    System.out.println("Student not found. Please enter a valid barcode.");
+                    continue;
+                }
                 break;
             } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
+                System.out.println("Invalid input. Please enter a valid numeric barcode.");
                 scanner.nextLine();
-            } catch (Exception e) {
-                System.out.println("An unexpected error occurred: " + e.getMessage());
-                e.printStackTrace();
-                return;
             }
         }
+        double gpa;
+        while (true) {
+            System.out.println("Enter GPA: ");
+            try {
+                gpa = scanner.nextDouble();
+                if (gpa < 0.0 || gpa > 4.0) {
+                    System.out.println("Invalid GPA. It must be between 0.0 and 4.0.");
+                    continue;
+                }
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid GPA (0.0 - 4.0).");
+                scanner.nextLine();
+            }
+        }
+        System.out.println(userController.setGPA(barcode, gpa));
     }
     private void manageCourses() {
         while (true) {
@@ -327,18 +355,43 @@ public class Front {
     }
 
     private void addSchedule() {
-        System.out.print("Enter Course Name: ");
-        String courseName = scanner.next();
-        System.out.print("Enter Instructor: ");
-        String instructor = scanner.next();
-        System.out.print("Enter Start Time (HH:MM:SS): ");
-        String startTime = scanner.next();
-        System.out.print("Enter End Time (HH:MM:SS): ");
-        String endTime = scanner.next();
-        System.out.print("Enter Day of the Week: ");
-        String day = scanner.next();
-
-        Schedule schedule = new Schedule(0, courseName, instructor, startTime, endTime, day);
+        System.out.println("Enter Course Name: ");
+        scanner.nextLine();
+        String courseName = scanner.nextLine();
+        System.out.println("Enter Instructor: ");
+        String instructor = scanner.nextLine();
+        LocalTime startTime;
+        while (true) {
+            System.out.print("Enter Start Time (HH:MM:SS): ");
+            try {
+                startTime = LocalTime.parse(scanner.nextLine());
+                break;
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid time format. Please enter time in HH:MM:SS format.");
+            }
+        }
+        System.out.print(startTime);
+        LocalTime endTime;
+        while (true) {
+            System.out.print("Enter End Time (HH:MM:SS): ");
+            try {
+                endTime = LocalTime.parse(scanner.nextLine());
+                break;
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid time format. Please enter time in HH:MM:SS format.");
+            }
+        }
+        List<String> validDays = Arrays.asList("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday");
+        String day;
+        while (true) {
+            System.out.print("Enter Day of the Week: ");
+            day = scanner.nextLine().trim().toLowerCase();
+            if (validDays.contains(day)) {
+                break;
+            }
+            System.out.println("Invalid day. Please enter a valid weekday (Monday-Sunday).");
+        }
+        Schedule schedule = new Schedule(courseName, instructor, startTime, endTime, day);
         System.out.println(scheduleController.addSchedule(schedule));
     }
 
@@ -462,16 +515,26 @@ public class Front {
             }
         }
     }
-    private void markAttendance() {
+    public void markAttendance(){
         System.out.print("Enter Student ID: ");
         int studentId = scanner.nextInt();
         System.out.print("Enter Course ID: ");
         int courseId = scanner.nextInt();
-        System.out.print("Enter Attendance Date (YYYY-MM-DD): ");
-        LocalDate date = LocalDate.parse(scanner.next());
-        System.out.print("Enter Status (true for Present, false for Absent): ");
-        boolean status = scanner.nextBoolean();
-        attendanceController.markAttendance(studentId, courseId, date, status);
+        scanner.nextLine();
+        LocalDate attendanceDate;
+        while (true) {
+            System.out.print("Enter Attendance Date (YYYY-MM-DD): ");
+            String dateInput = scanner.nextLine().trim();
+            try {
+                attendanceDate = LocalDate.parse(dateInput, DateTimeFormatter.ISO_LOCAL_DATE);
+                break;
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Please enter in YYYY-MM-DD format.");
+            }
+        }
+        System.out.print("Is the student present? (true/false): ");
+        boolean isPresent = scanner.nextBoolean();
+        attendanceController.markAttendance(studentId, courseId, attendanceDate, isPresent);
     }
     private void viewAttendanceByStudent() {
         System.out.print("Enter Student ID: ");

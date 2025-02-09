@@ -16,14 +16,14 @@ public class ScheduleRepository implements IScheduleRepository {
     }
     @Override
     public boolean createSchedule(Schedule schedule) {
-        String sql = "INSERT INTO schedule (course_name, instructor, start_time, end_time, day_of_week) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO schedule (course_name, instructor, start_time, end_time, day_of_week) VALUES (?, ?, ?, ?, ?)";
         try {
             Connection connection = db.getConnection();
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, schedule.getCourseName());
             st.setString(2, schedule.getInstructor());
-            st.setTime(3, java.sql.Time.valueOf(schedule.getStartTime()));
-            st.setTime(4, java.sql.Time.valueOf(schedule.getEndTime()));
+            st.setTime(3, Time.valueOf(schedule.getStartTime()));
+            st.setTime(4, Time.valueOf(schedule.getEndTime()));
             st.setString(5, schedule.getDayOfWeek().toLowerCase());
 
             return st.executeUpdate() > 0;
@@ -55,7 +55,7 @@ public class ScheduleRepository implements IScheduleRepository {
 
     @Override
     public List<Schedule> getAllSchedules() {
-        String sql = "SELECT id, course_name, instructor, start_time, end_time, day_of_week FROM schedule";
+        String sql = "SELECT * FROM schedule";
         List<Schedule> schedulesList = new ArrayList<>();
 
         try (Connection connection = db.getConnection();
@@ -90,8 +90,8 @@ public class ScheduleRepository implements IScheduleRepository {
                 rs.getInt("id"),
                 rs.getString("course_name"),
                 rs.getString("instructor"),
-                rs.getString("start_time"),
-                rs.getString("end_time"),
+                rs.getTime("start_time").toLocalTime(),
+                rs.getTime("end_time").toLocalTime(),
                 rs.getString("day_of_week")
         );
     }

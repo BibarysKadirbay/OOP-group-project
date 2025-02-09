@@ -33,8 +33,6 @@ public class AttendanceRepository implements IAttendanceRepository {
         }
         return false;
     }
-
-    // Get attendance by student ID
     public List<Attendance> getAttendanceByStudentId(int studentId) {
         List<Attendance> attendanceList = new ArrayList<>();
         Connection connection = null;
@@ -57,8 +55,6 @@ public class AttendanceRepository implements IAttendanceRepository {
         }
         return attendanceList;
     }
-
-    // Get attendance by course ID
     public List<Attendance> getAttendanceByCourseId(int courseId) {
         Connection connection = null;
         List<Attendance> attendanceList = new ArrayList<>();
