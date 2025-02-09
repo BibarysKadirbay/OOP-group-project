@@ -1,17 +1,19 @@
-Welcome to our Project!
-Student Management System
-A Java-based Student Management System for managing students, courses, attendance, schedules, and grades.
+## Welcome to Our Project!  
+### **Student Management System**  
+A **Java-based** Student Management System for managing students, courses, attendance, schedules, and grades.
 
-🚀 Features
-	•	Student Management: Add, update, and manage students.
-	•	Course Management: Assign courses to students.
-	•	Attendance Tracking: Mark and view student attendance.
-	•	Grade Management: Assign and retrieve student grades.
-	•	Schedule Management: Manage student schedules.
-	•	Role-Based Access: Assign different roles like Admin, Manager, and User.
+---
 
+### 🚀 Features  
+- **Student Management**: Add, update, and manage students.  
+- **Course Management**: Assign courses to students.  
+- **Attendance Tracking**: Mark and view student attendance.  
+- **Grade Management**: Assign and retrieve student grades.  
+- **Schedule Management**: Manage student schedules.  
+- **Role-Based Access**: Assign different roles like **Admin, Manager, and User**.  
 ## 📂 Project Structure
-## 📂 src
+```
+📂 src
 ├── 📂 controllers       
 │   ├── AttendanceController.java
 │   ├── CourseController.java
@@ -43,11 +45,11 @@ A Java-based Student Management System for managing students, courses, attendanc
 ├── Front.java            
 ├── Main.java               
 ├── README.md               
-
-
-📌 Contributors
-	•	[Bibarys]
-	•	[David]
-	•	[Arlan]
- 	•	[Ersultan]
-	•	[Ayazhan]
+```
+## 📌 Contributors  
+📌 **Team Members**:  
+- [Bibarys](https://github.com/BibarysKadirbay)  
+- [David](https://github.com/happydava)
+- [Arlan](https://github.com/arlan123124)  
+- [Ersultan](https://github.com/LuckyEra-00127)
+- [Ayazhan](https://github.com/Feliksskkk)
