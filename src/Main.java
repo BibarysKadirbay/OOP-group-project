@@ -8,7 +8,7 @@ import repository.interfaces.*;
 import repository.*;
 public class Main {
     public static void main(String[] args) {
-        IDB idb = new DB("jdbc:postgresql://localhost:5431", "postgres", "0000", "postgres");
+        IDB idb = DB.getInstance("jdbc:postgresql://localhost:5431", "postgres", "0000", "postgres");
         IUserRepository userRepository = new UserRepository(idb);
         ICourseRepository courseRepository = new CourseRepository(idb);
         IScheduleRepository scheduleRepository = new ScheduleRepository(idb);
@@ -21,6 +21,6 @@ public class Main {
         IAttendanceController attendanceController = new AttendanceController(attendanceRepository);
         Front project = new Front(userController, courseController, scheduleController , gradeController , attendanceController);
         project.run();
-        idb.close();
+        DB.getInstance(null, null, null, null).close();
     }
 }
